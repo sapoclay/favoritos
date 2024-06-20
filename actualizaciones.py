@@ -87,7 +87,7 @@ def mostrar_ventana_actualizaciones():
         try:
             # 'usuario' y 'repositorio' del repositorio en GitHub
             usuario = 'sapoclay'
-            repositorio = 'manten1d0'
+            repositorio = 'favoritos'
             url_repositorio = f'https://api.github.com/repos/{usuario}/{repositorio}/releases/latest'
             
             # Realizar la solicitud a la API de GitHub

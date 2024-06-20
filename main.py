@@ -11,12 +11,10 @@ class URLManagerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("URL Manager")
-        self.root.resizable(False, False)  # Evitar que la ventana sea redimensionable
         self.urls = []
         self.file_path = "urls.json"
         
         self.load_urls()
-        self.create_menu()
 
         self.add_url_button = tk.Button(root, text="Agregar URL", command=self.add_url)
         self.add_url_button.pack(pady=10)
@@ -34,9 +32,20 @@ class URLManagerApp:
         self.display_urls()
 
     def load_urls(self):
+        self.urls = []
         if os.path.exists(self.file_path):
-            with open(self.file_path, "r") as file:
-                self.urls = json.load(file)
+            try:
+                with open(self.file_path, "r") as file:
+                    content = file.read()
+                    if content.strip():  # Verificar si el contenido no está vacío
+                        self.urls = json.loads(content)
+                    else:
+                        messagebox.showwarning("Advertencia", "El archivo de URLs está vacío.")
+            except json.JSONDecodeError as e:
+                messagebox.showerror("Error", f"Error al cargar URLs: {e}")
+        else:
+            messagebox.showwarning("Advertencia", "El archivo de URLs no existe. Se creará uno nuevo.")
+            self.save_urls()  # Guarda una lista vacía inicial en un nuevo archivo
 
     def save_urls(self):
         with open(self.file_path, "w") as file:
@@ -63,11 +72,11 @@ class URLManagerApp:
 
         for url in self.urls:
             frame = tk.Frame(self.url_frame)
-            frame.pack(pady=5, padx=20)  # Añadir padding para centrar el frame dentro del canvas
+            frame.pack(fill="x", pady=5)
             btn = tk.Button(frame, text=url, command=lambda u=url: self.open_url(u), wraplength=250, justify="left")
-            btn.pack(side="left", expand=True, padx=10)
+            btn.pack(side="left", fill="x", expand=True)
             del_btn = tk.Button(frame, text="Eliminar", command=lambda u=url: self.delete_url(u))
-            del_btn.pack(side="left")
+            del_btn.pack(side="right")
 
         self.url_frame.update_idletasks()
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
@@ -79,9 +88,12 @@ class URLManagerApp:
             webbrowser.open(url)
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo abrir la URL: {e}")
+
+    def on_frame_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             
     def abrir_url_github(self):
-        webbrowser.open("https://github.com/sapoclay/manten1d0")
+        webbrowser.open("https://github.com/sapoclay/favoritos")
         
             # Función para abrir la ventana de actualizaciones
     def abrir_ventana_actualizaciones(self):
@@ -89,9 +101,6 @@ class URLManagerApp:
         import actualizaciones
         # Llamar a la función para mostrar la ventana de actualizaciones
         actualizaciones.mostrar_ventana_actualizaciones()
-
-    def on_frame_configure(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def center_buttons(self):
         for frame in self.url_frame.winfo_children():
