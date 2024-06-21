@@ -5,6 +5,14 @@ La aplicación va a permitir crear categorías para añadir en ellas las URL de 
 Las URL que se añadan, nos permitirán abrirlas en el navegador por defecto del sistema. Además nos permitirá eliminar las URL o modificarlas.
 
 
+
 ## Dependencias necesarias
 
 Es necesario instalar python3 y python3-tk. Ambas dependencias se pueden instalar fácilmente utilizando APT.
+El programa buscará instalar otras dependencias utilizando el script instalar_dependencias.py. Las dependencias que instalará son:
+
+       - validators
+       - Pillow
+       - openpyxl
+       - requests
+       - wget
